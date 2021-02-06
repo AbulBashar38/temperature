@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Temperature Hot</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url(images/bg-image.jpg) no-repeat;
+            background-size: cover;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form class="col-md-6 m-auto py-5">
+            <div class="input-group mb-3">
+                <input id="inputCity" type="text" class="form-control" placeholder="Enter a location for Weather ...">
+                <div class="input-group-append">
+                    <button onclick="clickAction()" type="button" class="btn btn-danger">Search</button>
+                </div>
+            </div>
+        </form>
+        <div class="weather-status text-white text-center">
+            <img id="icon-pic" src="" alt="">
+            <h1 id="cityName"></h1>
+            <h3><span id="showTemperature">0</span>&deg;C</h3>
+            <h1 class="lead" id="showCondition"></h1>
+        </div>
+    </div>
+    <script>
+        function clickAction() {
+            const captureCity = document.getElementById('inputCity').value;
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${captureCity}&appid=3942d8f88d629aa4d3bebb1a644f7645`)
+                .then(source => source.json())
+                .then(data => {
+                    const showCity = data.name;
+                    document.getElementById('cityName').innerText = showCity;
+                    const getTemperature = data.main.temp;
+                    const convertTemp = getTemperature - 273.15;
+                    const presentTemperature = convertTemp.toFixed(1);
+                    document.getElementById('showTemperature').innerText = presentTemperature;
+                    const weatherCondition = data.weather[0].main;
+                    document.getElementById('showCondition').innerText = weatherCondition;
+                    changeIcon('Haze', '13d');
+                    changeIcon('Snow', '13d');
+                    changeIcon('Clouds', '02d');
+                    changeIcon('Rain', '10d');
+                    changeIcon('Clear', '01d');
+                    changeIcon('Thunderstorm', '11d');
+                    changeIcon('Mist', '50d');
+                    // changeIcon('13d');
+                    function changeIcon(conditionName, code) {
+                        if (weatherCondition == conditionName) {
+                            document.getElementById('icon-pic').src = `https://openweathermap.org/img/wn/${code}@2x.png`
+                        }
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('cityName').innerText = 'City is not found';
+                    document.getElementById('showTemperature').innerText = 0;
+                    document.getElementById('showCondition').innerText = '';
+                })
+        }
+    </script>
+</body>
+
+</html>
